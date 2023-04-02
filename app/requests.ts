@@ -44,7 +44,7 @@ function getHeaders() {
 
 export async function requestChat(messages: Message[]) {
   const req: ChatRequest = makeRequestParam(messages, { filterBot: true });
-
+  console.log("requestChat",JSON.stringify(req));
   const res = await fetch("/api/chat", {
     method: "POST",
     headers: {
@@ -81,7 +81,7 @@ export async function requestChatStream(
 
   const controller = new AbortController();
   const reqTimeoutId = setTimeout(() => controller.abort(), TIME_OUT_MS);
-
+  console.log("requestChatStream body",JSON.stringify(req));
   try {
     const res = await fetch("/api/chat-stream", {
       method: "POST",
