@@ -12,8 +12,7 @@ export async function POST(req: Request) {
     console.log("发起POST请求");
     const openai = new OpenAIApi(
       new Configuration({
-        apiKey,
-        basePath:"https://openai-proxy-api.pages.dev/"
+        apiKey
       })
     );
 

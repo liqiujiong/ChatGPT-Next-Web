@@ -13,7 +13,7 @@ async function createStream(req: NextRequest) {
     console.log("[Stream] using user api key");
   }
 
-  const url = 'https://openai-proxy-api.pages.dev/api/v1/chat/completions'
+  const url = 'https://api.openai.com/v1/chat/completions'
   console.log("[stream]createStream req:",url)
 
   const res = await fetch(url, {
