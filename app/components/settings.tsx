@@ -98,14 +98,14 @@ export function Settings(props: { closeSettings: () => void }) {
               title={Locale.Settings.Actions.ClearAll}
             />
           </div>
-          <div className={styles["window-action-button"]}>
+          {/* <div className={styles["window-action-button"]}>
             <IconButton
               icon={<ResetIcon />}
               onClick={resetConfig}
               bordered
               title={Locale.Settings.Actions.ResetAll}
             />
-          </div>
+          </div> */}
           <div className={styles["window-action-button"]}>
             <IconButton
               icon={<CloseIcon />}
@@ -142,7 +142,7 @@ export function Settings(props: { closeSettings: () => void }) {
             </Popover>
           </SettingItem>
 
-          <SettingItem
+          {/* <SettingItem
             title={Locale.Settings.Update.Version(currentId)}
             subTitle={
               checkingUpdate
@@ -165,7 +165,7 @@ export function Settings(props: { closeSettings: () => void }) {
                 onClick={() => checkUpdate(true)}
               />
             )}
-          </SettingItem>
+          </SettingItem> */}
 
           <SettingItem title={Locale.Settings.SendKey}>
             <select
@@ -303,8 +303,8 @@ export function Settings(props: { closeSettings: () => void }) {
               onChange={(e) =>
                 updateConfig(
                   (config) =>
-                    (config.compressMessageLengthThreshold =
-                      e.currentTarget.valueAsNumber)
+                  (config.compressMessageLengthThreshold =
+                    e.currentTarget.valueAsNumber)
                 )
               }
             ></input>
@@ -341,8 +341,8 @@ export function Settings(props: { closeSettings: () => void }) {
               onChange={(e) => {
                 updateConfig(
                   (config) =>
-                    (config.modelConfig.temperature =
-                      e.currentTarget.valueAsNumber)
+                  (config.modelConfig.temperature =
+                    e.currentTarget.valueAsNumber)
                 );
               }}
             ></input>
@@ -359,8 +359,8 @@ export function Settings(props: { closeSettings: () => void }) {
               onChange={(e) =>
                 updateConfig(
                   (config) =>
-                    (config.modelConfig.max_tokens =
-                      e.currentTarget.valueAsNumber)
+                  (config.modelConfig.max_tokens =
+                    e.currentTarget.valueAsNumber)
                 )
               }
             ></input>
@@ -378,8 +378,8 @@ export function Settings(props: { closeSettings: () => void }) {
               onChange={(e) => {
                 updateConfig(
                   (config) =>
-                    (config.modelConfig.presence_penalty =
-                      e.currentTarget.valueAsNumber)
+                  (config.modelConfig.presence_penalty =
+                    e.currentTarget.valueAsNumber)
                 );
               }}
             ></input>
