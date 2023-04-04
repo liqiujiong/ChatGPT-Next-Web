@@ -127,7 +127,7 @@ export async function requestChatStream(
 
   const controller = new AbortController();
   const reqTimeoutId = setTimeout(() => controller.abort(), TIME_OUT_MS);
-
+  console.log("requestChatStream body", JSON.stringify(req));
   try {
     const res = await fetch("/api/chat-stream", {
       method: "POST",
