@@ -112,8 +112,8 @@ export function Settings(props: { closeSettings: () => void }) {
   }
 
   useEffect(() => {
-    checkUpdate();
-    checkUsage();
+    // checkUpdate();
+    // checkUsage();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -385,7 +385,7 @@ export function Settings(props: { closeSettings: () => void }) {
               }}
             />
           </SettingItem>
-
+          {/* 
           <SettingItem
             title={Locale.Settings.Usage.Title}
             subTitle={
@@ -405,7 +405,7 @@ export function Settings(props: { closeSettings: () => void }) {
                 onClick={checkUsage}
               />
             )}
-          </SettingItem>
+          </SettingItem> */}
 
           <SettingItem
             title={Locale.Settings.HistoryCount.Title}
