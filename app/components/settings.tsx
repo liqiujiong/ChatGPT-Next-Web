@@ -122,11 +122,11 @@ export function Settings(props: { closeSettings: () => void }) {
 
   const showUsage = !!accessStore.token || !!accessStore.accessCode;
 
-  useEffect(() => {
-    checkUpdate();
-    showUsage && checkUsage();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  // useEffect(() => {
+  //   checkUpdate();
+  //   showUsage && checkUsage();
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, []);
 
   useEffect(() => {
     const keydownEvent = (e: KeyboardEvent) => {
@@ -423,8 +423,8 @@ export function Settings(props: { closeSettings: () => void }) {
             <InputRange
               title={config.historyMessageCount.toString()}
               value={config.historyMessageCount}
-              min="0"
-              max="25"
+              min="1"
+              max="15"
               step="1"
               onChange={(e) =>
                 updateConfig(
@@ -439,19 +439,20 @@ export function Settings(props: { closeSettings: () => void }) {
             title={Locale.Settings.CompressThreshold.Title}
             subTitle={Locale.Settings.CompressThreshold.SubTitle}
           >
-            <input
-              type="number"
-              min={500}
-              max={4000}
+            <InputRange
+              title={config.compressMessageLengthThreshold.toString()}
               value={config.compressMessageLengthThreshold}
+              min="100"
+              max="1000"
+              step="100"
               onChange={(e) =>
                 updateConfig(
                   (config) =>
                     (config.compressMessageLengthThreshold =
-                      e.currentTarget.valueAsNumber),
+                      e.target.valueAsNumber),
                 )
               }
-            ></input>
+            ></InputRange>
           </SettingItem>
         </List>
 

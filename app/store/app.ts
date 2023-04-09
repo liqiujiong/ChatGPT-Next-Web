@@ -131,15 +131,15 @@ export const ModalConfigValidator = {
   },
 };
 
-const DEFAULT_CONFIG: ChatConfig = {
-  historyMessageCount: 3,
-  compressMessageLengthThreshold: 1000,
+export const DEFAULT_CONFIG: ChatConfig = {
+  historyMessageCount: 6,
+  compressMessageLengthThreshold: 500,
   sendBotMessages: true as boolean,
   submitKey: SubmitKey.Enter as SubmitKey,
   avatar: "1f603",
   fontSize: 14,
-  theme: Theme.Dark as Theme,
-  tightBorder: false,
+  theme: Theme.Auto as Theme,
+  tightBorder: true,
   sendPreviewBubble: false,
 
   disablePromptHint: false,

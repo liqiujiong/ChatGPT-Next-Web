@@ -16,7 +16,7 @@ import AddIcon from "../icons/add.svg";
 import LoadingIcon from "../icons/three-dots.svg";
 import CloseIcon from "../icons/close.svg";
 
-import { useChatStore } from "../store";
+import { DEFAULT_CONFIG, useChatStore } from "../store";
 import { isMobileScreen } from "../utils";
 import Locale from "../locales";
 import { Chat } from "./chat";
@@ -85,6 +85,18 @@ const useHasHydrated = () => {
   return hasHydrated;
 };
 
+const useResetBaseConfig = () => {
+  const [updateConfig] = useChatStore((state) => [state.updateConfig]);
+  useEffect(() => {
+    updateConfig((config) => {
+      (config.historyMessageCount = DEFAULT_CONFIG.historyMessageCount),
+        (config.compressMessageLengthThreshold =
+          DEFAULT_CONFIG.compressMessageLengthThreshold);
+      config.modelConfig.max_tokens = DEFAULT_CONFIG.modelConfig.max_tokens;
+    });
+  }, []);
+};
+
 function _Home() {
   const [createNewSession, currentIndex, removeSession] = useChatStore(
     (state) => [
@@ -102,6 +114,8 @@ function _Home() {
   const config = useChatStore((state) => state.config);
 
   useSwitchTheme();
+
+  useResetBaseConfig();
 
   if (loading) {
     return <Loading />;

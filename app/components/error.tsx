@@ -30,14 +30,14 @@ export class ErrorBoundary extends React.Component<any, IErrorBoundaryState> {
             <code>{this.state.error?.toString()}</code>
             <code>{this.state.info?.componentStack}</code>
           </pre>
-
+          {/*
           <a href={ISSUE_URL} className="report">
             <IconButton
               text="Report This Error"
               icon={<GithubIcon />}
               bordered
             />
-          </a>
+          </a> */}
         </div>
       );
     }
