@@ -443,7 +443,7 @@ export function Settings(props: { closeSettings: () => void }) {
               title={config.compressMessageLengthThreshold.toString()}
               value={config.compressMessageLengthThreshold}
               min="100"
-              max="2000"
+              max="3000"
               step="100"
               onChange={(e) =>
                 updateConfig(
