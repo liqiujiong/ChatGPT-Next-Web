@@ -6,7 +6,7 @@ export const config = {
   matcher: ["/api/openai", "/api/chat-stream"],
 };
 
-export function middleware(req: NextRequest) {
+export async function middleware(req: NextRequest) {
   const accessCode = req.headers.get("access-code");
   const token = req.headers.get("token");
   const hashedCode = md5.hash(accessCode ?? "").trim();
@@ -49,31 +49,31 @@ export function middleware(req: NextRequest) {
     console.log("[Auth] set user token");
   }
   // 打印记录
-  (async () => {
-    try {
-      const payload = await req.json()
-      const messages = payload.messages || []
-      if (messages.length === 0) {
-        return
-      }
-      let totalLength = 0
-      for (let i = 0; i < messages.length; i++) {
-        const message = messages[i]
-        if (message && message.content) {
-          totalLength += message.content.length
-        }
-      }
-      const lastMessage = messages[messages.length - 1]
-      if (lastMessage && lastMessage.content) {
-        const truncatedLastMessage = lastMessage.content.substring(0, 200)
-        console.info(`[chat:${totalLength},len:${lastMessage.content.length}]${truncatedLastMessage}`)
-      } else {
-        console.warn('Cannot retrieve last message')
-      }
-    } catch (e) {
-      console.error('Error:', e)
+
+  try {
+    const payload = await req.json()
+    const messages = payload.messages || []
+    if (messages.length === 0) {
+      return
     }
-  })()
+    let totalLength = 0
+    for (let i = 0; i < messages.length; i++) {
+      const message = messages[i]
+      if (message && message.content) {
+        totalLength += message.content.length
+      }
+    }
+    const lastMessage = messages[messages.length - 1]
+    if (lastMessage && lastMessage.content) {
+      const truncatedLastMessage = lastMessage.content.substring(0, 200)
+      console.log(`[chat:${totalLength},len:${lastMessage.content.length}]${truncatedLastMessage}`)
+    } else {
+      console.warn('Cannot retrieve last message')
+    }
+  } catch (e) {
+    console.error('Error:', e)
+  }
+  
 
   return NextResponse.next({
     request: {
