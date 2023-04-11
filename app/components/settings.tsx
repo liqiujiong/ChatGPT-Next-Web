@@ -424,7 +424,7 @@ export function Settings(props: { closeSettings: () => void }) {
               title={config.historyMessageCount.toString()}
               value={config.historyMessageCount}
               min="1"
-              max="15"
+              max="18"
               step="1"
               onChange={(e) =>
                 updateConfig(
@@ -443,7 +443,7 @@ export function Settings(props: { closeSettings: () => void }) {
               title={config.compressMessageLengthThreshold.toString()}
               value={config.compressMessageLengthThreshold}
               min="100"
-              max="1000"
+              max="2000"
               step="100"
               onChange={(e) =>
                 updateConfig(
