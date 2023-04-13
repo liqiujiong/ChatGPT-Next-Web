@@ -399,9 +399,9 @@ export function Settings(props: { closeSettings: () => void }) {
                 ? loadingUsage
                   ? Locale.Settings.Usage.IsChecking
                   : Locale.Settings.Usage.SubTitle(
-                      usage?.used ?? "[?]",
-                      usage?.subscription ?? "[?]",
-                    )
+                    usage?.used ?? "[?]",
+                    usage?.subscription ?? "[?]",
+                  )
                 : Locale.Settings.Usage.NoAccess
             }
           >
@@ -443,13 +443,13 @@ export function Settings(props: { closeSettings: () => void }) {
               title={config.compressMessageLengthThreshold.toString()}
               value={config.compressMessageLengthThreshold}
               min="100"
-              max="3000"
+              max="4000"
               step="100"
               onChange={(e) =>
                 updateConfig(
                   (config) =>
-                    (config.compressMessageLengthThreshold =
-                      e.target.valueAsNumber),
+                  (config.compressMessageLengthThreshold =
+                    e.target.valueAsNumber),
                 )
               }
             ></InputRange>
@@ -463,9 +463,9 @@ export function Settings(props: { closeSettings: () => void }) {
               onChange={(e) => {
                 updateConfig(
                   (config) =>
-                    (config.modelConfig.model = ModalConfigValidator.model(
-                      e.currentTarget.value,
-                    )),
+                  (config.modelConfig.model = ModalConfigValidator.model(
+                    e.currentTarget.value,
+                  )),
                 );
               }}
             >
@@ -488,10 +488,10 @@ export function Settings(props: { closeSettings: () => void }) {
               onChange={(e) => {
                 updateConfig(
                   (config) =>
-                    (config.modelConfig.temperature =
-                      ModalConfigValidator.temperature(
-                        e.currentTarget.valueAsNumber,
-                      )),
+                  (config.modelConfig.temperature =
+                    ModalConfigValidator.temperature(
+                      e.currentTarget.valueAsNumber,
+                    )),
                 );
               }}
             ></InputRange>
@@ -508,10 +508,10 @@ export function Settings(props: { closeSettings: () => void }) {
               onChange={(e) =>
                 updateConfig(
                   (config) =>
-                    (config.modelConfig.max_tokens =
-                      ModalConfigValidator.max_tokens(
-                        e.currentTarget.valueAsNumber,
-                      )),
+                  (config.modelConfig.max_tokens =
+                    ModalConfigValidator.max_tokens(
+                      e.currentTarget.valueAsNumber,
+                    )),
                 )
               }
             ></input>
@@ -528,10 +528,10 @@ export function Settings(props: { closeSettings: () => void }) {
               onChange={(e) => {
                 updateConfig(
                   (config) =>
-                    (config.modelConfig.presence_penalty =
-                      ModalConfigValidator.presence_penalty(
-                        e.currentTarget.valueAsNumber,
-                      )),
+                  (config.modelConfig.presence_penalty =
+                    ModalConfigValidator.presence_penalty(
+                      e.currentTarget.valueAsNumber,
+                    )),
                 );
               }}
             ></InputRange>
