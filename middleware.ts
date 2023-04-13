@@ -65,7 +65,7 @@ export async function middleware(req: NextRequest) {
     }
     const lastMessage = messages[messages.length - 1]
     if (lastMessage && lastMessage.content) {
-      const truncatedLastMessage = lastMessage.content.substring(0, 200)
+      const truncatedLastMessage = lastMessage.content.substring(0, 500)
       console.log(`[chat:${totalLength},len:${lastMessage.content.length}]${truncatedLastMessage}`)
     } else {
       console.warn('Cannot retrieve last message')
@@ -73,7 +73,7 @@ export async function middleware(req: NextRequest) {
   } catch (e) {
     console.error('Error:', e)
   }
-  
+
 
   return NextResponse.next({
     request: {
