@@ -92,15 +92,15 @@ export function Login(props: LoginProps) {
 
   useEffect(() => {
     if (agreed) {
-      getQrCodeUrl();
-      interval.current = setInterval(() => {
-        checkLoginStatus();
-      }, 2000);
+    //   getQrCodeUrl();
+    //   interval.current = setInterval(() => {
+    //     checkLoginStatus();
+    //   }, 2000);
     } else {
       getFileContents();
     }
     return () => {
-      clearInterval(interval.current);
+    //   clearInterval(interval.current);
     };
   }, [agreed]);
 
