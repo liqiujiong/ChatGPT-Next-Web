@@ -8,13 +8,11 @@
     "build": "yarn fetch && next build",
     "start": "next start",
     "lint": "next lint",
-    "fetch": "node ./scripts/fetch-prompts.mjs",
-    "prepare": "husky install"
+    "fetch": "node ./scripts/fetch-prompts.mjs"
   },
   "dependencies": {
     "@hello-pangea/dnd": "^16.2.0",
     "@svgr/webpack": "^6.5.1",
-    "@vercel/analytics": "^0.1.11",
     "emoji-picker-react": "^4.4.7",
     "eventsource-parser": "^0.1.0",
     "fuse.js": "^6.6.2",
@@ -45,7 +43,6 @@
     "eslint-config-next": "13.2.3",
     "eslint-config-prettier": "^8.8.0",
     "eslint-plugin-prettier": "^4.2.1",
-    "husky": "^8.0.0",
     "lint-staged": "^13.2.0",
     "prettier": "^2.8.7",
     "typescript": "4.9.5"

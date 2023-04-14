@@ -133,7 +133,7 @@ export const ModalConfigValidator = {
 
 export const DEFAULT_CONFIG: ChatConfig = {
   historyMessageCount: 6,
-  compressMessageLengthThreshold: 500,
+  compressMessageLengthThreshold: 2000,
   sendBotMessages: true as boolean,
   submitKey: SubmitKey.Enter as SubmitKey,
   avatar: "1f603",
