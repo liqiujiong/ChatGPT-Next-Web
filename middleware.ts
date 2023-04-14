@@ -66,7 +66,7 @@ export async function middleware(req: NextRequest) {
     const lastMessage = messages[messages.length - 1]
     if (lastMessage && lastMessage.content) {
       const truncatedLastMessage = lastMessage.content.substring(0, 500)
-      console.log(`[chat:${totalLength},len:${lastMessage.content.length}]${truncatedLastMessage}`)
+      console.log(`[${new Date()}chat:${totalLength},len:${lastMessage.content.length}]${truncatedLastMessage}`)
     } else {
       console.warn('Cannot retrieve last message')
     }
