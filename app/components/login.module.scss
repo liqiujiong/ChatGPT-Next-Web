@@ -189,6 +189,17 @@
     margin-bottom: 14px;
 }
 
+.agree-box{
+    width: 100%;
+    pre{
+        width: 100%;
+        white-space: pre-wrap;
+
+    }
+    
+}
+
+
 @media only screen and (max-width: 600px) {
     .modal-container {
         width: 90vw;
