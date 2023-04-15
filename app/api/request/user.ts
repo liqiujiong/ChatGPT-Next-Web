@@ -2,6 +2,8 @@ import { getItem } from "@/app/utils";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8088";
 
+const SELF_DOMAIN = `${window.location.protocol}//${window.location.host}${window.location.pathname}`;
+
 export interface IUser {
   wechat_openid: string;
   coin: number;
@@ -26,34 +28,43 @@ export interface IUser {
 /**
  * 用户接口
  */
-export const authFetch = async (path:string, params:any = null, body:any = null) => {
-
+export const authFetch = async (
+  path: string,
+  params: any = null,
+  body: any = null,
+) => {
   const token = getItem("jwt");
   const headers = {
-    token: `${token}`
-  } as any
+    token: `${token}`,
+    origin: SELF_DOMAIN,
+  } as any;
   if (params) {
-    path = API_URL + `${path}?` + new URLSearchParams(params)
+    path = API_URL + `${path}?` + new URLSearchParams(params);
   } else {
-    path = API_URL + `${path}`
+    path = API_URL + `${path}`;
   }
 
   const options = {
-    headers
-  } as RequestInit
+    headers,
+  } as RequestInit;
   if (body) {
-    options.method = 'POST'
-    options.body = JSON.stringify(body)
-    headers['Content-Type'] = 'application/json'
+    options.method = "POST";
+    options.body = JSON.stringify(body);
+    headers["Content-Type"] = "application/json";
   }
 
-  const response = await (await fetch(path, options)).json()
-  return response
-}
+  const response = await (await fetch(path, options)).json();
+  return response;
+};
 
 export const fetchLoginStatus = async (scene_value: string) => {
+  const options = {
+    headers: {
+      origin: SELF_DOMAIN,
+    },
+  };
   const response = await (
-    await fetch(API_URL + `/wx/LoginStatus?wechat_flag=${scene_value}`)
+    await fetch(API_URL + `/wx/LoginStatus?wechat_flag=${scene_value}`,options)
   ).json();
   return response as {
     success: boolean;
@@ -64,7 +75,12 @@ export const fetchLoginStatus = async (scene_value: string) => {
 };
 
 export const fetchQrCodeUrl = async () => {
-  const response = await (await fetch(API_URL + "/wx/QrCode")).json();
+  const options = {
+    headers: {
+      origin: SELF_DOMAIN,
+    },
+  };
+  const response = await (await fetch(API_URL + "/wx/QrCode",options)).json();
   return response as {
     success: boolean;
     data: { qrcode_url: string; scene_value: string };
@@ -74,7 +90,7 @@ export const fetchQrCodeUrl = async () => {
 
 export const fetchUserInfo = async () => {
   // const response = await (await fetch(API_URL + "/user/current")).json();
-  const response = await authFetch('/user/current')
+  const response = await authFetch("/user/current");
   return response as {
     success: boolean;
     data: IUser;
