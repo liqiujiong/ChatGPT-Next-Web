@@ -201,7 +201,7 @@ function _Home() {
                     </div>
                 </div>
 
-                <Login />
+                {/* <Login /> */}
             </div>
 
             <div className={styles["window-content"]}>
