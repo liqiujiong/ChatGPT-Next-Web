@@ -1,5 +1,7 @@
 /** @type {import('next').NextConfig} */
 
+const BASE_API_URL = process.env.BASE_API_URL || "localhost:8088";
+
 const nextConfig = {
     experimental: {
         appDir: true,
@@ -13,7 +15,15 @@ const nextConfig = {
         return config;
     },
     images: {
-        domains: ["mp.weixin.qq.com", "aitop.lqjhome.cn"],
+        domains: ["mp.weixin.qq.com"],
+    },
+    async rewrites() {
+      return [
+        {
+          source: '/hehe/:path*',
+          destination: `https://${BASE_API_URL}/api/:path*`,
+        },
+      ]
     },
 };
 
