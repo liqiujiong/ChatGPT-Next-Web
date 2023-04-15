@@ -3,8 +3,16 @@
 import { useState, useEffect, useRef } from "react";
 import styles from "./login.module.scss";
 import CloseIcon from "../icons/close.svg";
-import Image from "next/image";
 import LoadingIcon from "../icons/three-dots.svg";
+import ReloadIcon from "../icons/reload.svg";
+import { useChatStore } from "../store";
+import {
+  fetchLoginStatus,
+  fetchQrCodeUrl,
+  fetchUserInfo,
+} from "../api/request/user";
+import { showToast } from "./ui-lib";
+import { getItem, setItem } from "../utils";
 
 interface LoginProps {}
 
@@ -48,39 +56,77 @@ export function Modal(props: ModalProps) {
   );
 }
 
-const Test_API = "https://aitop.lqjhome.cn/api";
 export function Login(props: LoginProps) {
   const [qrCodeUrl, setQrCodeUrl] = useState("");
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [fileContents, setFileContents] = useState("");
-  const [agreed, setAgreed] = useState(false);
+  const [expire, setExpire] = useState(false);
+  const [agreed, setAgreed] = useState(true);
   const scene_value = useRef("");
   const interval = useRef({} as NodeJS.Timer);
+  const [config, updateConfig, resetConfig, clearAllData, clearSessions] =
+    useChatStore((state) => [
+      state.config,
+      state.updateConfig,
+      state.resetConfig,
+      state.clearAllData,
+      state.clearSessions,
+    ]);
+
+  const checkLogin = async () => {
+    const token = getItem("jwt");
+    updateConfig((config) => {
+      config.token = token;
+    });
+    if (token) {
+      const res = await fetchUserInfo();
+      if (res.success) {
+        const data = res.data;
+        updateConfig((config) => {
+          config.user = data;
+          config.token = token;
+        });
+        showToast("欢迎回来", undefined, 1000);
+      } else {
+        const msg = res.msg;
+        showToast((msg as string) + ",请重新登录");
+        setItem("jwt", "");
+        updateConfig((config) => {
+          config.token = "";
+        });
+      }
+    }
+  };
+
   const getQrCodeUrl = async () => {
-    const response = await (await fetch(Test_API + "/wx/QrCode")).json();
-    const data = response.data as { qrcode_url: string; scene_value: string };
+    setQrCodeUrl("");
+    setExpire(false);
+    const res = await fetchQrCodeUrl();
+    const data = res.data;
     scene_value.current = data.scene_value;
     setQrCodeUrl(data.qrcode_url);
   };
 
   const checkLoginStatus = async () => {
-    const response = await (
-      await fetch(
-        Test_API + `/wx/LoginStatus?wechat_flag=${scene_value.current}`,
-      )
-    ).json();
-    const data = response as {
-      success: boolean;
-      data: { token: string };
-      msg?: string;
-    };
-    console.log("data response:>> ", response);
-    if (data.success == true) {
-      setIsLoggedIn(true);
+    const res = await fetchLoginStatus(scene_value.current);
+
+    if (res.success == true) {
       clearInterval(interval.current);
-      console.log("token :>> ", data.data.token);
+      const data = res.data;
+      updateConfig((config) => {
+        config.user = data.user;
+        config.token = data.token;
+      });
+      console.log("token :>> ", data.token);
+      setItem("jwt", data.token);
+      showToast("登录成功,欢迎回来", undefined, 1000);
     } else {
-      console.log("msg:", data.msg);
+      console.log("msg:", res.msg);
+      if (res.status == 1009) {
+        clearInterval(interval.current);
+        showToast("登录超时,请重新刷新二维码");
+        setQrCodeUrl("");
+        setExpire(true);
+      }
     }
   };
 
@@ -91,45 +137,47 @@ export function Login(props: LoginProps) {
   }
 
   useEffect(() => {
-    if (agreed) {
-    //   getQrCodeUrl();
-    //   interval.current = setInterval(() => {
-    //     checkLoginStatus();
-    //   }, 2000);
+    checkLogin();
+    return () => {};
+  }, []);
+
+  useEffect(() => {
+    if (agreed && !config.token) {
+      getQrCodeUrl();
     } else {
       getFileContents();
     }
-    return () => {
-    //   clearInterval(interval.current);
-    };
-  }, [agreed]);
-
-  useEffect(() => {}, []);
+  }, [agreed, config.token]);
 
   useEffect(() => {
-    if (isLoggedIn) {
+    if (qrCodeUrl) {
+      interval.current = setInterval(() => {
+        checkLoginStatus();
+      }, 2000);
     }
-  }, [isLoggedIn]);
-  console.log(qrCodeUrl);
+    return () => {
+      clearInterval(interval.current);
+    };
+  }, [qrCodeUrl]);
 
   const Agree = () => {
     return (
       <div className={styles["agree-box"]}>
         <pre>{fileContents}</pre>
-        <label style={{ display: "flex", alignItems: "center" , justifyContent:"end"}}>
+        <label
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "end",
+          }}
+        >
           <input
             type="checkbox"
             checked={agreed}
             onChange={() => setAgreed(!agreed)}
             style={{ margin: "0 10px 0 0" }}
           />
-          <a
-            href="/user_agree.txt"
-            target="_blank"
-            style={{ color: "inherit", textDecoration: "none" }}
-          >
-            本人已阅读并同意《用户协议》
-          </a>
+          <text>本人已阅读并同意《用户协议》</text>
         </label>
       </div>
     );
@@ -139,7 +187,7 @@ export function Login(props: LoginProps) {
     return (
       <>
         {qrCodeUrl && (
-          <Image
+          <img
             src={qrCodeUrl}
             alt="qrcode"
             placeholder="empty"
@@ -149,20 +197,40 @@ export function Login(props: LoginProps) {
           />
         )}
 
-        {!qrCodeUrl && <LoadingIcon className={styles["qrcode-img"]} />}
-        <div className={styles["box-text"]}>使用微信扫码登录</div>
+        {!qrCodeUrl && !expire && (
+          <LoadingIcon className={styles["qrcode-img"]} />
+        )}
+        {expire && (
+          <div
+            className={styles["qrcode-img"]}
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center"
+            }}
+          >
+            <div style={{alignItems:"center"}}>二维码过期, 请刷新</div>
+
+          </div>
+        )}
+        <div className={styles["box-text"]}>
+          <text>使用微信扫码登录</text>
+          <div>(长按识别或截图)</div>
+        </div>
+        <a onClick={getQrCodeUrl}>刷新二维码</a>
       </>
     );
   };
 
   return (
     <>
-      {!agreed && (
+      {!config.token && (
         <div className="modal-mask">
-          <Modal title="用户协议">
+          <Modal title="登录">
             <div className={styles["box-style"]}>
               {!agreed && <Agree />}
-              {/* {agreed && <Scan />} */}
+              {agreed && <Scan />}
             </div>
           </Modal>
         </div>

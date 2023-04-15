@@ -145,3 +145,17 @@ export function autoGrowTextArea(dom: HTMLTextAreaElement) {
 
   return rows;
 }
+
+export function getItem(key: string) {
+  try {
+    return localStorage.getItem(key);
+  } catch {
+    return null;
+  }
+}
+
+export function setItem(key: string, value: string) {
+  try {
+    localStorage.setItem(key, value);
+  } catch {}
+}

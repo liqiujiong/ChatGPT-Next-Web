@@ -26,7 +26,7 @@ import {
 import { Avatar } from "./chat";
 
 import Locale, { AllLangs, changeLang, getLang } from "../locales";
-import { getCurrentVersion, getEmojiUrl } from "../utils";
+import { getCurrentVersion, getEmojiUrl, setItem } from "../utils";
 import Link from "next/link";
 import { UPDATE_URL } from "../constant";
 import { SearchService, usePromptStore } from "../store/prompt";
@@ -181,6 +181,26 @@ export function Settings(props: { closeSettings: () => void }) {
       </div>
       <div className={styles["settings"]}>
         <List>
+          <SettingItem title="用户">
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center"
+              }}
+            >
+              <text style={{fontSize:"12px"}}>{config.user.wechat_openid.substring(0, 10) + config.user.id}</text>
+              <IconButton
+                icon={<CloseIcon />}
+                text={"退出"}
+                onClick={() => {
+                  showToast("已退出")
+                  setItem("jwt", "");
+                  location.reload()
+                }}
+              />
+            </div>
+          </SettingItem>
           <SettingItem title={Locale.Settings.Avatar}>
             <Popover
               onClose={() => setShowEmojiPicker(false)}
@@ -205,6 +225,14 @@ export function Settings(props: { closeSettings: () => void }) {
               </div>
             </Popover>
           </SettingItem>
+          {/* <SettingItem title="每日次数">
+            <text>无限(每天0点刷新)</text>
+          </SettingItem> */}
+          <SettingItem title="已用次数">
+            <text style={{fontSize:"12px"}}>{config.user.coin}</text>
+          </SettingItem>
+        </List>
+        <List>
 
           {/* <SettingItem
             title={Locale.Settings.Update.Version(currentId)}
@@ -359,7 +387,7 @@ export function Settings(props: { closeSettings: () => void }) {
             />
           </SettingItem>
         </List>
-        <List>
+        {/* <List>
           {enabledAccessControl ? (
             <SettingItem
               title={Locale.Settings.AccessCode.Title}
@@ -416,6 +444,28 @@ export function Settings(props: { closeSettings: () => void }) {
             )}
           </SettingItem>
 
+        </List> */}
+
+        <List>
+          <SettingItem title={Locale.Settings.Model}>
+            <select
+              value={config.modelConfig.model}
+              onChange={(e) => {
+                updateConfig(
+                  (config) =>
+                  (config.modelConfig.model = ModalConfigValidator.model(
+                    e.currentTarget.value,
+                  )),
+                );
+              }}
+            >
+              {ALL_MODELS.map((v) => (
+                <option value={v.name} key={v.name} disabled={!v.available}>
+                  {v.name}
+                </option>
+              ))}
+            </select>
+          </SettingItem>
           <SettingItem
             title={Locale.Settings.HistoryCount.Title}
             subTitle={Locale.Settings.HistoryCount.SubTitle}
@@ -439,12 +489,11 @@ export function Settings(props: { closeSettings: () => void }) {
             title={Locale.Settings.CompressThreshold.Title}
             subTitle={Locale.Settings.CompressThreshold.SubTitle}
           >
-            <InputRange
-              title={config.compressMessageLengthThreshold.toString()}
+          <input
+              type="number"
+              min={500}
+              max={4000}
               value={config.compressMessageLengthThreshold}
-              min="100"
-              max="4000"
-              step="100"
               onChange={(e) =>
                 updateConfig(
                   (config) =>
@@ -452,29 +501,7 @@ export function Settings(props: { closeSettings: () => void }) {
                     e.target.valueAsNumber),
                 )
               }
-            ></InputRange>
-          </SettingItem>
-        </List>
-
-        <List>
-          <SettingItem title={Locale.Settings.Model}>
-            <select
-              value={config.modelConfig.model}
-              onChange={(e) => {
-                updateConfig(
-                  (config) =>
-                  (config.modelConfig.model = ModalConfigValidator.model(
-                    e.currentTarget.value,
-                  )),
-                );
-              }}
-            >
-              {ALL_MODELS.map((v) => (
-                <option value={v.name} key={v.name} disabled={!v.available}>
-                  {v.name}
-                </option>
-              ))}
-            </select>
+            ></input>
           </SettingItem>
           <SettingItem
             title={Locale.Settings.Temperature.Title}
@@ -514,7 +541,7 @@ export function Settings(props: { closeSettings: () => void }) {
                     )),
                 )
               }
-            ></input>
+            />
           </SettingItem>
           <SettingItem
             title={Locale.Settings.PresencePenlty.Title}
