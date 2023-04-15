@@ -201,6 +201,14 @@ export function Settings(props: { closeSettings: () => void }) {
               />
             </div>
           </SettingItem>
+          {/* <SettingItem title="每日次数">
+            <text>无限(每天0点刷新)</text>
+          </SettingItem> */}
+          {/* <SettingItem title="已用次数">
+            <text style={{fontSize:"12px"}}>{config.user.coin}</text>
+          </SettingItem> */}
+        </List>
+        <List>
           <SettingItem title={Locale.Settings.Avatar}>
             <Popover
               onClose={() => setShowEmojiPicker(false)}
@@ -225,15 +233,6 @@ export function Settings(props: { closeSettings: () => void }) {
               </div>
             </Popover>
           </SettingItem>
-          {/* <SettingItem title="每日次数">
-            <text>无限(每天0点刷新)</text>
-          </SettingItem> */}
-          <SettingItem title="已用次数">
-            <text style={{fontSize:"12px"}}>{config.user.coin}</text>
-          </SettingItem>
-        </List>
-        <List>
-
           {/* <SettingItem
             title={Locale.Settings.Update.Version(currentId)}
             subTitle={
