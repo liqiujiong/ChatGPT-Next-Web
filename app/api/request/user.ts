@@ -1,7 +1,5 @@
 import { getItem } from "@/app/utils";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8088";
-
 export interface IUser {
   wechat_openid: string;
   coin: number;
@@ -33,9 +31,9 @@ export const authFetch = async (path:string, params:any = null, body:any = null)
     token: `${token}`
   } as any
   if (params) {
-    path = API_URL + `${path}?` + new URLSearchParams(params)
+    path = `${path}?` + new URLSearchParams(params)
   } else {
-    path = API_URL + `${path}`
+    path = `${path}`
   }
 
   const options = {
@@ -53,7 +51,7 @@ export const authFetch = async (path:string, params:any = null, body:any = null)
 
 export const fetchLoginStatus = async (scene_value: string) => {
   const response = await (
-    await fetch(API_URL + `/wx/LoginStatus?wechat_flag=${scene_value}`)
+    await fetch(`/hehe/wx/LoginStatus?wechat_flag=${scene_value}`)
   ).json();
   return response as {
     success: boolean;
@@ -64,7 +62,7 @@ export const fetchLoginStatus = async (scene_value: string) => {
 };
 
 export const fetchQrCodeUrl = async () => {
-  const response = await (await fetch(API_URL + "/wx/QrCode")).json();
+  const response = await (await fetch("/hehe/wx/QrCode")).json();
   return response as {
     success: boolean;
     data: { qrcode_url: string; scene_value: string };
@@ -73,8 +71,7 @@ export const fetchQrCodeUrl = async () => {
 };
 
 export const fetchUserInfo = async () => {
-  // const response = await (await fetch(API_URL + "/user/current")).json();
-  const response = await authFetch('/user/current')
+  const response = await authFetch('/hehe/user/current')
   return response as {
     success: boolean;
     data: IUser;
