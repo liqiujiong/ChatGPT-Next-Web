@@ -16,7 +16,7 @@ import AddIcon from "../icons/add.svg";
 import LoadingIcon from "../icons/three-dots.svg";
 import CloseIcon from "../icons/close.svg";
 
-import { useChatStore } from "../store";
+import { DEFAULT_CONFIG, useChatStore } from "../store";
 import { getCSSVar, isMobileScreen } from "../utils";
 import Locale from "../locales";
 import { Chat } from "./chat";
@@ -24,6 +24,7 @@ import { Chat } from "./chat";
 import dynamic from "next/dynamic";
 import { REPO_URL } from "../constant";
 import { ErrorBoundary } from "./error";
+import { Login } from "./login";
 
 export function Loading(props: { noLogo?: boolean }) {
   return (
@@ -130,6 +131,18 @@ const useHasHydrated = () => {
   return hasHydrated;
 };
 
+const useResetBaseConfig = () => {
+  const [updateConfig] = useChatStore((state) => [state.updateConfig]);
+  useEffect(() => {
+    updateConfig((config) => {
+      (config.historyMessageCount = DEFAULT_CONFIG.historyMessageCount),
+        (config.compressMessageLengthThreshold =
+          DEFAULT_CONFIG.compressMessageLengthThreshold);
+      config.modelConfig.max_tokens = DEFAULT_CONFIG.modelConfig.max_tokens;
+    });
+  }, []);
+};
+
 function _Home() {
   const [createNewSession, currentIndex, removeSession] = useChatStore(
     (state) => [
@@ -151,25 +164,26 @@ function _Home() {
 
   useSwitchTheme();
 
+  useResetBaseConfig();
+
   if (loading) {
     return <Loading />;
   }
 
   return (
     <div
-      className={`${
-        config.tightBorder && !isMobileScreen()
-          ? styles["tight-container"]
-          : styles.container
-      }`}
+      className={`${config.tightBorder && !isMobileScreen()
+        ? styles["tight-container"]
+        : styles.container
+        }`}
     >
       <div
         className={styles.sidebar + ` ${showSideBar && styles["sidebar-show"]}`}
       >
         <div className={styles["sidebar-header"]}>
-          <div className={styles["sidebar-title"]}>ChatGPT Next</div>
+          <div className={styles["sidebar-title"]}>ChatGPT</div>
           <div className={styles["sidebar-sub-title"]}>
-            Build your own AI assistant.
+            Your own AI assistant.
           </div>
           <div className={styles["sidebar-logo"]}>
             <ChatGptIcon />
@@ -204,11 +218,11 @@ function _Home() {
                 shadow
               />
             </div>
-            <div className={styles["sidebar-action"]}>
+            {/* <div className={styles["sidebar-action"]}>
               <a href={REPO_URL} target="_blank">
                 <IconButton icon={<GithubIcon />} shadow />
               </a>
-            </div>
+            </div> */}
           </div>
           <div>
             <IconButton
@@ -227,6 +241,7 @@ function _Home() {
           className={styles["sidebar-drag"]}
           onMouseDown={(e) => onDragMouseDown(e as any)}
         ></div>
+        <Login />
       </div>
 
       <div className={styles["window-content"]}>

@@ -11,6 +11,7 @@ import { isMobileScreen, trimTopic } from "../utils";
 
 import Locale from "../locales";
 import { showToast } from "../components/ui-lib";
+import { IUser } from "../api/request/user";
 
 export type Message = ChatCompletionResponseMessage & {
   date: string;
@@ -56,6 +57,9 @@ export interface ChatConfig {
   sidebarWidth: number;
 
   disablePromptHint: boolean;
+
+  token: string | null;
+  user: IUser;
 
   modelConfig: {
     model: string;
@@ -132,11 +136,11 @@ export const ModalConfigValidator = {
   },
 };
 
-const DEFAULT_CONFIG: ChatConfig = {
-  historyMessageCount: 4,
-  compressMessageLengthThreshold: 1000,
+export const DEFAULT_CONFIG: ChatConfig = {
+  historyMessageCount: 6,
+  compressMessageLengthThreshold: 2000,
   sendBotMessages: true as boolean,
-  submitKey: SubmitKey.CtrlEnter as SubmitKey,
+  submitKey: SubmitKey.Enter as SubmitKey,
   avatar: "1f603",
   fontSize: 14,
   theme: Theme.Auto as Theme,
@@ -146,10 +150,18 @@ const DEFAULT_CONFIG: ChatConfig = {
 
   disablePromptHint: false,
 
+  token: null,
+  user: {
+    wechat_openid: "",
+    coin: 0,
+    type: 0,
+    count: 0,
+  },
+
   modelConfig: {
     model: "gpt-3.5-turbo",
     temperature: 1,
-    max_tokens: 2000,
+    max_tokens: 1000,
     presence_penalty: 0,
   },
 };
@@ -252,7 +264,13 @@ export const useChatStore = create<ChatStore>()(
       },
 
       resetConfig() {
-        set(() => ({ config: { ...DEFAULT_CONFIG } }));
+        set((state) => ({
+          config: {
+            ...DEFAULT_CONFIG,
+            token: state.config.token,
+            user: state.config.user,
+          },
+        }));
       },
 
       getConfig() {

@@ -22,10 +22,6 @@ const makeRequestParam = (
 
   const modelConfig = { ...useChatStore.getState().config.modelConfig };
 
-  // @yidadaa: wont send max_tokens, because it is nonsense for Muggles
-  // @ts-expect-error
-  delete modelConfig.max_tokens;
-
   return {
     messages: sendMessages,
     stream: options?.stream,
@@ -143,7 +139,6 @@ export async function requestChatStream(
 
   const controller = new AbortController();
   const reqTimeoutId = setTimeout(() => controller.abort(), TIME_OUT_MS);
-
   try {
     const res = await fetch("/api/chat-stream", {
       method: "POST",

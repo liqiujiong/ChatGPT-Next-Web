@@ -27,3 +27,22 @@ export async function requestOpenai(req: NextRequest) {
     body: req.body,
   });
 }
+
+
+// const API_BASE_URL = process.env.BASE_URL ?? "https://aitop.lqjhome.cn/api";
+
+// export async function requestProxy(req: NextRequest) {
+//   const auth = req.headers.get("Authorization") || '';
+//   const openaiPath = req.headers.get("path");
+
+//   console.log("[Proxy] ", openaiPath);
+
+//   return fetch(`${API_BASE_URL}/${openaiPath}`, {
+//     headers: {
+//       "Content-Type": "application/json",
+//       Authorization: auth,
+//     },
+//     method: req.method,
+//     body: req.body,
+//   });
+// }

@@ -124,3 +124,17 @@ export function autoGrowTextArea(dom: HTMLTextAreaElement) {
 export function getCSSVar(varName: string) {
   return getComputedStyle(document.body).getPropertyValue(varName).trim();
 }
+
+export function getItem(key: string) {
+  try {
+    return localStorage.getItem(key);
+  } catch {
+    return null;
+  }
+}
+
+export function setItem(key: string, value: string) {
+  try {
+    localStorage.setItem(key, value);
+  } catch { }
+}

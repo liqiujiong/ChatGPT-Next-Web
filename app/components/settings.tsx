@@ -12,7 +12,7 @@ import EditIcon from "../icons/edit.svg";
 import EyeIcon from "../icons/eye.svg";
 import EyeOffIcon from "../icons/eye-off.svg";
 
-import { Input, List, ListItem, Modal, Popover } from "./ui-lib";
+import { Input, List, ListItem, Modal, Popover, showToast } from "./ui-lib";
 
 import { IconButton } from "./button";
 import {
@@ -27,7 +27,7 @@ import {
 import { Avatar } from "./chat";
 
 import Locale, { AllLangs, changeLang, getLang } from "../locales";
-import { copyToClipboard, getEmojiUrl } from "../utils";
+import { getEmojiUrl, setItem, copyToClipboard } from "../utils";
 import Link from "next/link";
 import { UPDATE_URL } from "../constant";
 import { Prompt, SearchService, usePromptStore } from "../store/prompt";
@@ -227,8 +227,8 @@ export function Settings(props: { closeSettings: () => void }) {
   const showUsage = accessStore.isAuthorized();
   useEffect(() => {
     // checks per minutes
-    checkUpdate();
-    showUsage && checkUsage();
+    // checkUpdate();
+    // showUsage && checkUsage();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -299,6 +299,34 @@ export function Settings(props: { closeSettings: () => void }) {
       </div>
       <div className={styles["settings"]}>
         <List>
+          <SettingItem title="用户">
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center"
+              }}
+            >
+              <text style={{ fontSize: "12px" }}>{config.user.wechat_openid.substring(0, 10) + config.user.id}</text>
+              <IconButton
+                icon={<CloseIcon />}
+                text={"退出"}
+                onClick={() => {
+                  showToast("已退出")
+                  setItem("jwt", "");
+                  location.reload()
+                }}
+              />
+            </div>
+          </SettingItem>
+          {/* <SettingItem title="每日次数">
+            <text>无限(每天0点刷新)</text>
+          </SettingItem> */}
+          {/* <SettingItem title="已用次数">
+            <text style={{fontSize:"12px"}}>{config.user.coin}</text>
+          </SettingItem> */}
+        </List>
+        <List>
           <SettingItem title={Locale.Settings.Avatar}>
             <Popover
               onClose={() => setShowEmojiPicker(false)}
@@ -323,9 +351,8 @@ export function Settings(props: { closeSettings: () => void }) {
               </div>
             </Popover>
           </SettingItem>
-
-          <SettingItem
-            title={Locale.Settings.Update.Version(currentVersion ?? "unknown")}
+          {/* <SettingItem
+            title={Locale.Settings.Update.Version(currentId)}
             subTitle={
               checkingUpdate
                 ? Locale.Settings.Update.IsChecking
@@ -347,7 +374,7 @@ export function Settings(props: { closeSettings: () => void }) {
                 onClick={() => checkUpdate(true)}
               />
             )}
-          </SettingItem>
+          </SettingItem> */}
 
           <SettingItem title={Locale.Settings.SendKey}>
             <select
@@ -445,9 +472,23 @@ export function Settings(props: { closeSettings: () => void }) {
               }
             ></input>
           </SettingItem>
-        </List>
 
-        <List>
+          <SettingItem
+            title={Locale.Settings.Prompt.List}
+            subTitle={Locale.Settings.Prompt.ListCount(
+              builtinCount,
+              customCount,
+            )}
+          >
+            <IconButton
+              icon={<EditIcon />}
+              text={Locale.Settings.Prompt.Edit}
+              onClick={() => showToast(Locale.WIP)}
+            />
+          </SettingItem>
+
+        </List>
+        {/* <List>
           {enabledAccessControl ? (
             <SettingItem
               title={Locale.Settings.AccessCode.Title}
@@ -487,9 +528,9 @@ export function Settings(props: { closeSettings: () => void }) {
                 ? loadingUsage
                   ? Locale.Settings.Usage.IsChecking
                   : Locale.Settings.Usage.SubTitle(
-                      usage?.used ?? "[?]",
-                      usage?.subscription ?? "[?]",
-                    )
+                    usage?.used ?? "[?]",
+                    usage?.subscription ?? "[?]",
+                  )
                 : Locale.Settings.Usage.NoAccess
             }
           >
@@ -504,6 +545,28 @@ export function Settings(props: { closeSettings: () => void }) {
             )}
           </SettingItem>
 
+        </List> */}
+
+        <List>
+          <SettingItem title={Locale.Settings.Model}>
+            <select
+              value={config.modelConfig.model}
+              onChange={(e) => {
+                updateConfig(
+                  (config) =>
+                  (config.modelConfig.model = ModalConfigValidator.model(
+                    e.currentTarget.value,
+                  )),
+                );
+              }}
+            >
+              {ALL_MODELS.map((v) => (
+                <option value={v.name} key={v.name} disabled={!v.available}>
+                  {v.name}
+                </option>
+              ))}
+            </select>
+          </SettingItem>
           <SettingItem
             title={Locale.Settings.HistoryCount.Title}
             subTitle={Locale.Settings.HistoryCount.SubTitle}
@@ -511,8 +574,8 @@ export function Settings(props: { closeSettings: () => void }) {
             <InputRange
               title={config.historyMessageCount.toString()}
               value={config.historyMessageCount}
-              min="0"
-              max="25"
+              min="1"
+              max="18"
               step="1"
               onChange={(e) =>
                 updateConfig(
@@ -535,8 +598,8 @@ export function Settings(props: { closeSettings: () => void }) {
               onChange={(e) =>
                 updateConfig(
                   (config) =>
-                    (config.compressMessageLengthThreshold =
-                      e.currentTarget.valueAsNumber),
+                  (config.compressMessageLengthThreshold =
+                    e.target.valueAsNumber),
                 )
               }
             ></input>
@@ -582,9 +645,9 @@ export function Settings(props: { closeSettings: () => void }) {
               onChange={(e) => {
                 updateConfig(
                   (config) =>
-                    (config.modelConfig.model = ModalConfigValidator.model(
-                      e.currentTarget.value,
-                    )),
+                  (config.modelConfig.model = ModalConfigValidator.model(
+                    e.currentTarget.value,
+                  )),
                 );
               }}
             >
@@ -607,10 +670,10 @@ export function Settings(props: { closeSettings: () => void }) {
               onChange={(e) => {
                 updateConfig(
                   (config) =>
-                    (config.modelConfig.temperature =
-                      ModalConfigValidator.temperature(
-                        e.currentTarget.valueAsNumber,
-                      )),
+                  (config.modelConfig.temperature =
+                    ModalConfigValidator.temperature(
+                      e.currentTarget.valueAsNumber,
+                    )),
                 );
               }}
             ></InputRange>
@@ -627,13 +690,13 @@ export function Settings(props: { closeSettings: () => void }) {
               onChange={(e) =>
                 updateConfig(
                   (config) =>
-                    (config.modelConfig.max_tokens =
-                      ModalConfigValidator.max_tokens(
-                        e.currentTarget.valueAsNumber,
-                      )),
+                  (config.modelConfig.max_tokens =
+                    ModalConfigValidator.max_tokens(
+                      e.currentTarget.valueAsNumber,
+                    )),
                 )
               }
-            ></input>
+            />
           </SettingItem>
           <SettingItem
             title={Locale.Settings.PresencePenlty.Title}
@@ -647,10 +710,10 @@ export function Settings(props: { closeSettings: () => void }) {
               onChange={(e) => {
                 updateConfig(
                   (config) =>
-                    (config.modelConfig.presence_penalty =
-                      ModalConfigValidator.presence_penalty(
-                        e.currentTarget.valueAsNumber,
-                      )),
+                  (config.modelConfig.presence_penalty =
+                    ModalConfigValidator.presence_penalty(
+                      e.currentTarget.valueAsNumber,
+                    )),
                 );
               }}
             ></InputRange>
