@@ -473,7 +473,7 @@ export function Settings(props: { closeSettings: () => void }) {
             ></input>
           </SettingItem>
 
-          <SettingItem
+          {/* <SettingItem
             title={Locale.Settings.Prompt.List}
             subTitle={Locale.Settings.Prompt.ListCount(
               builtinCount,
@@ -485,7 +485,7 @@ export function Settings(props: { closeSettings: () => void }) {
               text={Locale.Settings.Prompt.Edit}
               onClick={() => showToast(Locale.WIP)}
             />
-          </SettingItem>
+          </SettingItem> */}
 
         </List>
         {/* <List>
