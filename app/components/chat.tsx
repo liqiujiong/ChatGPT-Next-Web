@@ -39,9 +39,9 @@ import {
   copyToClipboard,
   downloadAs,
   getEmojiUrl,
-  isMobileScreen,
   selectOrCopy,
   autoGrowTextArea,
+  useMobileScreen,
 } from "../utils";
 
 import dynamic from "next/dynamic";
@@ -439,6 +439,7 @@ export function Chat(props: {
   const { submitKey, shouldSubmit } = useSubmitHandler();
   const { scrollRef, setAutoScroll, scrollToBottom } = useScrollToBottom();
   const [hitBottom, setHitBottom] = useState(false);
+  const isMobileScreen = useMobileScreen();
 
   const onChatBodyScroll = (e: HTMLElement) => {
     const isTouchBottom = e.scrollTop + e.clientHeight >= e.scrollHeight - 20;
@@ -469,7 +470,7 @@ export function Chat(props: {
       const rows = inputRef.current ? autoGrowTextArea(inputRef.current) : 1;
       const inputRows = Math.min(
         5,
-        Math.max(2 + Number(!isMobileScreen()), rows),
+        Math.max(2 + Number(!isMobileScreen), rows),
       );
       setInputRows(inputRows);
     },
@@ -509,7 +510,7 @@ export function Chat(props: {
     setBeforeInput(userInput);
     setUserInput("");
     setPromptHints([]);
-    if (!isMobileScreen()) inputRef.current?.focus();
+    if (!isMobileScreen) inputRef.current?.focus();
     setAutoScroll(true);
   };
 
@@ -641,7 +642,7 @@ export function Chat(props: {
 
   // Auto focus
   useEffect(() => {
-    if (props.sideBarShowing && isMobileScreen()) return;
+    if (props.sideBarShowing && isMobileScreen) return;
     inputRef.current?.focus();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -689,7 +690,7 @@ export function Chat(props: {
               }}
             />
           </div>
-          {!isMobileScreen() && (
+          {!isMobileScreen && (
             <div className={styles["window-action-button"]}>
               <IconButton
                 icon={chatStore.config.tightBorder ? <MinIcon /> : <MaxIcon />}
@@ -789,7 +790,7 @@ export function Chat(props: {
                     }
                     onContextMenu={(e) => onRightClick(e, message)}
                     onDoubleClickCapture={() => {
-                      if (!isMobileScreen()) return;
+                      if (!isMobileScreen) return;
                       setUserInput(message.content);
                     }}
                     fontSize={fontSize}
