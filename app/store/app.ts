@@ -18,6 +18,7 @@ export type Message = ChatCompletionResponseMessage & {
   streaming?: boolean;
   isError?: boolean;
   id?: number;
+  model?: ModelType;
 };
 
 export function createMessage(override: Partial<Message>): Message {
@@ -62,7 +63,7 @@ export interface ChatConfig {
   user: IUser;
 
   modelConfig: {
-    model: string;
+    model: ModelType;
     temperature: number;
     max_tokens: number;
     presence_penalty: number;
@@ -100,7 +101,9 @@ export const ALL_MODELS = [
     name: "gpt-3.5-turbo-0301",
     available: true,
   },
-];
+] as const;
+
+export type ModelType = (typeof ALL_MODELS)[number]["name"];
 
 export function limitNumber(
   x: number,
@@ -123,7 +126,7 @@ export function limitModel(name: string) {
 
 export const ModalConfigValidator = {
   model(x: string) {
-    return limitModel(x);
+    return limitModel(x) as ModelType;
   },
   max_tokens(x: number) {
     return limitNumber(x, 0, 32000, 2000);
@@ -405,6 +408,7 @@ export const useChatStore = create<ChatStore>()(
           role: "assistant",
           streaming: true,
           id: userMessage.id! + 1,
+          model: get().config.modelConfig.model,
         });
 
         // get recent messages
