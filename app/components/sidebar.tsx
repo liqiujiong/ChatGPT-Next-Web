@@ -95,9 +95,9 @@ export function SideBar(props: { className?: string }) {
         }`}
     >
       <div className={styles["sidebar-header"]}>
-        <div className={styles["sidebar-title"]}>ChatGPT</div>
+        <div className={styles["sidebar-title"]}>ChatGPT — AiTopTop.com</div>
         <div className={styles["sidebar-sub-title"]}>
-          您的私人Ai助手 —— AiTopTop.com
+          一个让普通人也能轻易驾驭GPT的Ai应用
         </div>
         <div className={styles["sidebar-logo"] + " no-dark"}>
           <ChatGptIcon />
@@ -153,6 +153,7 @@ export function SideBar(props: { className?: string }) {
             onClick={() => {
               if (config.dontShowMaskSplashScreen) {
                 chatStore.newSession();
+                navigate(Path.Chat);
               } else {
                 navigate(Path.NewChat);
               }
