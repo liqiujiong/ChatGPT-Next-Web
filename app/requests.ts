@@ -162,8 +162,8 @@ export async function requestChatStream(
     filterBot: options?.filterBot,
     model: options?.model,
   });
-
-  console.log("[Request] ", req);
+  // 改为3.5请求
+  req.model = req.model.indexOf('-4') != -1 ? 'gpt-3.5-turbo-0301' : req.model
 
   const controller = new AbortController();
   const reqTimeoutId = setTimeout(() => controller.abort(), TIME_OUT_MS);

@@ -270,6 +270,9 @@ export function Settings() {
           {/* <SettingItem title="已用次数">
             <text style={{fontSize:"12px"}}>{config.user.coin}</text>
           </SettingItem> */}
+        </List>
+
+        <List>
           <ListItem title={Locale.Settings.Avatar}>
             <Popover
               onClose={() => setShowEmojiPicker(false)}
