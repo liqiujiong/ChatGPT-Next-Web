@@ -4,8 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import styles from "./login.module.scss";
 import CloseIcon from "../icons/close.svg";
 import LoadingIcon from "../icons/three-dots.svg";
-import ReloadIcon from "../icons/reload.svg";
-import { useChatStore } from "../store";
+import { useUserStore } from "../store";
 import {
   fetchLoginStatus,
   fetchQrCodeUrl,
@@ -14,11 +13,8 @@ import {
 import { showToast } from "./ui-lib";
 import { getItem, setItem } from "../utils";
 
-interface LoginProps {}
+interface LoginProps { }
 
-interface LoginStatusResponse {
-  isLoggedIn: boolean;
-}
 
 interface ModalProps {
   title: string;
@@ -63,36 +59,23 @@ export function Login(props: LoginProps) {
   const [agreed, setAgreed] = useState(true);
   const scene_value = useRef("");
   const interval = useRef({} as NodeJS.Timer);
-  const [config, updateConfig, resetConfig, clearAllData, clearSessions] =
-    useChatStore((state) => [
-      state.config,
-      state.updateConfig,
-      state.resetConfig,
-      state.clearAllData,
-      state.clearSessions,
-    ]);
 
+  const userStore = useUserStore()
   const checkLogin = async () => {
     const token = getItem("jwt");
-    updateConfig((config) => {
-      config.token = token;
-    });
+    userStore.setToken(token)
     if (token) {
       const res = await fetchUserInfo();
       if (res.success) {
         const data = res.data;
-        updateConfig((config) => {
-          config.user = data;
-          config.token = token;
-        });
+        userStore.setToken(token)
+        userStore.setUser(data)
         showToast("欢迎回来", undefined, 1000);
       } else {
         const msg = res.msg;
         showToast((msg as string) + ",请重新登录");
         setItem("jwt", "");
-        updateConfig((config) => {
-          config.token = "";
-        });
+        userStore.setToken("")
       }
     }
   };
@@ -112,10 +95,8 @@ export function Login(props: LoginProps) {
     if (res.success == true) {
       clearInterval(interval.current);
       const data = res.data;
-      updateConfig((config) => {
-        config.user = data.user;
-        config.token = data.token;
-      });
+      userStore.setToken(data.token)
+      userStore.setUser(data.user)
       console.log("token :>> ", data.token);
       setItem("jwt", data.token);
       showToast("登录成功,欢迎回来", undefined, 1000);
@@ -138,16 +119,17 @@ export function Login(props: LoginProps) {
 
   useEffect(() => {
     checkLogin();
-    return () => {};
+    return () => { };
   }, []);
 
   useEffect(() => {
-    if (agreed && !config.token) {
+    if (agreed && !userStore.token) {
       getQrCodeUrl();
+
     } else {
       getFileContents();
     }
-  }, [agreed, config.token]);
+  }, [agreed, userStore.token]);
 
   useEffect(() => {
     if (qrCodeUrl) {
@@ -210,7 +192,7 @@ export function Login(props: LoginProps) {
               justifyContent: "center"
             }}
           >
-            <div style={{alignItems:"center"}}>二维码过期, 请刷新</div>
+            <div style={{ alignItems: "center" }}>二维码过期, 请刷新</div>
 
           </div>
         )}
@@ -225,7 +207,7 @@ export function Login(props: LoginProps) {
 
   return (
     <>
-      {!config.token && (
+      {!userStore.token && (
         <div className="modal-mask">
           <Modal title="登录">
             <div className={styles["box-style"]}>

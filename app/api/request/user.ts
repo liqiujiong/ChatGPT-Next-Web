@@ -7,6 +7,7 @@ export interface IUser {
   count: number;
   phone?: string;
   wechat?: string;
+  invite?: string;
   nickname?: string;
   real_name?: string;
   exp_time?: string;
@@ -24,7 +25,7 @@ export interface IUser {
 /**
  * 用户接口
  */
-export const authFetch = async (path:string, params:any = null, body:any = null) => {
+export const authFetch = async (path: string, params: any = null, body: any = null) => {
 
   const token = getItem("jwt");
   const headers = {

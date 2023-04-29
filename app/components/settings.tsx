@@ -18,6 +18,7 @@ import {
   useUpdateStore,
   useAccessStore,
   useAppConfig,
+  useUserStore,
 } from "../store";
 
 import Locale, { AllLangs, changeLang, getLang } from "../locales";
@@ -134,6 +135,8 @@ function UserPromptModal(props: { onClose?: () => void }) {
 export function Settings() {
   const navigate = useNavigate();
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const user = useUserStore()
+  const userInfo = user.user
   const config = useAppConfig();
   const updateConfig = config.update;
   const resetConfig = config.reset;
@@ -240,7 +243,7 @@ export function Settings() {
       </div>
       <div className={styles["settings"]}>
         <List>
-          {/* <ListItem title="用户">
+          <ListItem title="用户">
             <div
               style={{
                 display: "flex",
@@ -248,18 +251,19 @@ export function Settings() {
                 alignItems: "center"
               }}
             >
-              <text style={{ fontSize: "12px" }}>{config.user.wechat_openid.substring(0, 10) + config.user.id}</text>
+              <text style={{ fontSize: "12px" }}>{userInfo.wechat_openid.substring(0, 10) + userInfo.id}</text>
               <IconButton
                 icon={<CloseIcon />}
                 text={"退出"}
                 onClick={() => {
                   showToast("已退出")
                   setItem("jwt", "");
+                  navigate(Path.NewChat);
                   location.reload()
                 }}
               />
             </div>
-          </ListItem> */}
+          </ListItem>
           {/* <SettingItem title="每日次数">
             <text>无限(每天0点刷新)</text>
           </SettingItem> */}

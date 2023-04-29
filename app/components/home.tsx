@@ -119,6 +119,7 @@ function Screen() {
         }`
       }
     >
+      <Login></Login>
       <SideBar className={isHome ? styles["sidebar-show"] : ""} />
 
       <div className={styles["window-content"]} id={SlotID.AppBody}>
