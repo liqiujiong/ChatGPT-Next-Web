@@ -236,7 +236,7 @@ export function MaskPage() {
           </div>
 
           <div className="window-actions">
-            <div className="window-action-button">
+            {/* <div className="window-action-button">
               <IconButton
                 icon={<DownloadIcon />}
                 bordered
@@ -249,7 +249,7 @@ export function MaskPage() {
                 bordered
                 onClick={() => showToast(Locale.WIP)}
               />
-            </div>
+            </div> */}
             <div className="window-action-button">
               <IconButton
                 icon={<CloseIcon />}
@@ -311,9 +311,8 @@ export function MaskPage() {
                   <div className={styles["mask-title"]}>
                     <div className={styles["mask-name"]}>{m.name}</div>
                     <div className={styles["mask-info"] + " one-line"}>
-                      {`${Locale.Mask.Item.Info(m.context.length)} / ${
-                        Locale.Settings.Lang.Options[m.lang]
-                      } / ${m.modelConfig.model}`}
+                      {`${Locale.Mask.Item.Info(m.context.length)} / ${Locale.Settings.Lang.Options[m.lang]
+                        } / ${m.modelConfig.model}`}
                     </div>
                   </div>
                 </div>
@@ -363,15 +362,15 @@ export function MaskPage() {
             title={Locale.Mask.EditModal.Title(editingMask?.builtin)}
             onClose={closeMaskModal}
             actions={[
-              <IconButton
-                icon={<DownloadIcon />}
-                text={Locale.Mask.EditModal.Download}
-                key="export"
-                bordered
-                onClick={() =>
-                  downloadAs(JSON.stringify(editingMask), "mask.json")
-                }
-              />,
+              // <IconButton
+              //   icon={<DownloadIcon />}
+              //   text={Locale.Mask.EditModal.Download}
+              //   key="export"
+              //   bordered
+              //   onClick={() =>
+              //     downloadAs(JSON.stringify(editingMask), "mask.json")
+              //   }
+              // />,
               <IconButton
                 key="copy"
                 icon={<CopyIcon />}
