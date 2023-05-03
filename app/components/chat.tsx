@@ -1,5 +1,5 @@
 import { useDebouncedCallback } from "use-debounce";
-import { memo, useState, useRef, useEffect, useLayoutEffect } from "react";
+import { useState, useRef, useEffect, useLayoutEffect } from "react";
 
 import SendWhiteIcon from "../icons/send-white.svg";
 import BrainIcon from "../icons/brain.svg";
@@ -65,12 +65,9 @@ import {
   useMaskStore,
 } from "../store/mask";
 
-const Markdown = dynamic(
-  async () => memo((await import("./markdown")).Markdown),
-  {
-    loading: () => <LoadingIcon />,
-  },
-);
+const Markdown = dynamic(async () => (await import("./markdown")).Markdown, {
+  loading: () => <LoadingIcon />,
+});
 
 function exportMessages(messages: Message[], topic: string) {
   const mdText =
@@ -392,7 +389,7 @@ export function Chat() {
   const onPromptSelect = (prompt: Prompt) => {
     setPromptHints([]);
     inputRef.current?.focus();
-    setUserInput(prompt.content);
+    setTimeout(() => setUserInput(prompt.content), 60);
   };
 
   // auto grow input
@@ -729,6 +726,7 @@ export function Chat() {
                     }}
                     fontSize={fontSize}
                     parentRef={scrollRef}
+                    defaultShow={i >= messages.length - 10}
                   />
                 </div>
                 {!isUser && !message.preview && (
