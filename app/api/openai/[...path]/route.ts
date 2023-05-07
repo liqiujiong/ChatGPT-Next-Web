@@ -48,7 +48,6 @@ async function handle(
   req: NextRequest,
   { params }: { params: { path: string[] } },
 ) {
-  console.log("[OpenAI Route] params ", params);
 
   const authResult = auth(req);
   if (authResult.error) {

@@ -4,23 +4,17 @@ const nextConfig = {
   experimental: {
     appDir: true,
   },
-  async rewrites() {
-    const ret = [];
-
-    const apiUrl = process.env.API_URL;
-    if (apiUrl) {
-      console.log("[Next] using api url ", apiUrl);
-      ret.push({
-        source: "/api/:path*",
-        destination: `${apiUrl}/:path*`,
-      });
-    }
-
+  async rewrites () {
+    const BASE_API_URL = process.env.BASE_API_URL
     return {
-      beforeFiles: ret,
+      beforeFiles: [{
+        source: '/hehe/:path*',
+        destination: `https://${BASE_API_URL}/api/:path*`,
+      }
+      ],
     };
   },
-  webpack(config) {
+  webpack (config) {
     config.module.rules.push({
       test: /\.svg$/,
       use: ["@svgr/webpack"],
@@ -29,6 +23,9 @@ const nextConfig = {
     return config;
   },
   output: "standalone",
+  images: {
+    domains: ["mp.weixin.qq.com"],
+  },
 };
 
 export default nextConfig;
