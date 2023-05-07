@@ -26,7 +26,7 @@ export const DEFAULT_CONFIG = {
   sendPreviewBubble: true,
   sidebarWidth: 300,
 
-  disablePromptHint: true,
+  disablePromptHint: false,
 
   dontShowMaskSplashScreen: true, // dont show splash screen when create chat
 
